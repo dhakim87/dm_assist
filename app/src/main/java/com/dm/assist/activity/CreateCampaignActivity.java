@@ -46,8 +46,6 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
-
-
 public class CreateCampaignActivity extends AppCompatActivity {
     public static boolean showedPlea = false;
 
@@ -61,7 +59,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private EditText campaignNameEditText;
     private Spinner dmStyleSpinner;
     private EditText settingEditText;
-    private Button saveCampaignButton;
     private Button addCharacterButton;
     private Button generateNPCButton;
     private Button generateOneShotButton;
@@ -110,7 +107,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
         campaignNameEditText = findViewById(R.id.campaignNameEditText);
         dmStyleSpinner = findViewById(R.id.dmStyleSpinner);
         settingEditText = findViewById(R.id.settingEditText);
-        saveCampaignButton = findViewById(R.id.saveCampaignButton);
         dmStyleDescriptionTextView = findViewById(R.id.dmStyleDescriptionTextView);
         remainingTokensTextView = findViewById(R.id.remainingTokensTextView);
 
@@ -156,13 +152,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 dmStyleDescriptionTextView.setText("");
-            }
-        });
-
-        saveCampaignButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCampaign(true);
             }
         });
 
@@ -284,6 +273,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
             if (tokens < 0) {
                 System.out.println("Has an ad to show: " + (this.interstitialAd != null));
                 if (this.interstitialAd == null && !this.loadingAd) {
+                    System.out.println("Loading ad...");
                     this.loadingAd = true;
                     AdRequest adRequest = new AdRequest.Builder().build();
                     InterstitialAd.load(this, AD_ID, adRequest,
@@ -352,6 +342,11 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveCampaign(true);
     }
 
     @Override

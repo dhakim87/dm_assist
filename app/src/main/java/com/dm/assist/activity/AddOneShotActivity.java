@@ -15,7 +15,6 @@ public class AddOneShotActivity extends AppCompatActivity {
 
     private EditText oneShotNameEditText;
     private EditText oneShotDescriptionEditText;
-    private Button saveOneShotButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,21 +23,17 @@ public class AddOneShotActivity extends AppCompatActivity {
 
         oneShotNameEditText = findViewById(R.id.oneShotNameEditText);
         oneShotDescriptionEditText = findViewById(R.id.oneShotDescriptionEditText);
-        saveOneShotButton = findViewById(R.id.addOneShotButton);
 
         OneShot editChar = this.getIntent().getParcelableExtra("oneShot");
         if (editChar != null) {
             oneShotNameEditText.setText(editChar.name);
             oneShotDescriptionEditText.setText(editChar.desc);
-            saveOneShotButton.setText("Update One Shot");
         }
+    }
 
-        saveOneShotButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveOneShot();
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        saveOneShot();
     }
 
     private void saveOneShot() {

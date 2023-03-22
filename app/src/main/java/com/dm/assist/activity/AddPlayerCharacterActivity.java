@@ -21,10 +21,7 @@ public class AddPlayerCharacterActivity extends AppCompatActivity {
 
     private EditText characterNameEditText;
     private EditText characterDescriptionEditText;
-
     private Button talkToCharacterButton;
-
-    private Button addCharacterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +30,6 @@ public class AddPlayerCharacterActivity extends AppCompatActivity {
 
         characterNameEditText = findViewById(R.id.characterNameEditText);
         characterDescriptionEditText = findViewById(R.id.characterDescriptionEditText);
-        addCharacterButton = findViewById(R.id.addCharacterButton);
         talkToCharacterButton = findViewById(R.id.talkToCharacterButton);
 
         WorldCharacter editChar = this.getIntent().getParcelableExtra("character");
@@ -42,20 +38,19 @@ public class AddPlayerCharacterActivity extends AppCompatActivity {
             characterDescriptionEditText.setText(editChar.description);
         }
 
-        addCharacterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addCharacter();
-            }
-        });
-
         talkToCharacterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { talkToCharacter(); }
         });
     }
 
-    private void addCharacter() {
+    @Override
+    public void onBackPressed() {
+        saveCharacter();
+    }
+
+
+    private void saveCharacter() {
         WorldCharacter toSave = constructCharacter();
 
         Intent resultIntent = new Intent();
