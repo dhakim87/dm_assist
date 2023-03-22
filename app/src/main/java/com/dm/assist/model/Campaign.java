@@ -15,16 +15,14 @@ public class Campaign implements Parcelable
 {
     public String id;
     public String name;
-    public String dm;
     public String desc;
     public List<WorldCharacter> pcs;
     public List<WorldCharacter> npcs;
     public List<OneShot> oneShots;
 
-    public Campaign(String name, String dm, String desc, List<WorldCharacter> pcs, List<WorldCharacter> npcs, List<OneShot> oneShots) {
+    public Campaign(String name, String desc, List<WorldCharacter> pcs, List<WorldCharacter> npcs, List<OneShot> oneShots) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
-        this.dm = dm;
         this.desc = desc;
         this.pcs = new ArrayList<WorldCharacter>(pcs);
         this.npcs = new ArrayList<WorldCharacter>(npcs);
@@ -34,7 +32,6 @@ public class Campaign implements Parcelable
     protected Campaign(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
-        this.dm = in.readString();
         this.desc = in.readString();
         this.pcs = new ArrayList<WorldCharacter>();
         this.npcs = new ArrayList<WorldCharacter>();
@@ -57,7 +54,6 @@ public class Campaign implements Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.dm);
         dest.writeString(this.desc);
         dest.writeInt(this.pcs.size());
         for (int i = 0; i < this.pcs.size(); i++)
@@ -107,7 +103,6 @@ public class Campaign implements Parcelable
 
         Campaign c = new Campaign(
             obj.getString("name"),
-            obj.getString("dm"),
             obj.getString("desc"),
             pcs,
             npcs,
@@ -121,7 +116,6 @@ public class Campaign implements Parcelable
         JSONObject obj = new JSONObject();
         obj.put("id", this.id);
         obj.put("name", this.name);
-        obj.put("dm", this.dm);
         obj.put("desc", this.desc);
 
         JSONArray jpcs = new JSONArray();

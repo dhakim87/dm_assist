@@ -41,34 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="DM Style"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
-
-            <Spinner
-                android:id="@+id/dmStyleSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/dm_styles" />
-
-            <TextView
-                android:id="@+id/dmStyleDescriptionTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="" />
-
-            <Button
-                android:id="@+id/chatWithDMButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center_horizontal"
-                android:text="Chat With DM AI" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="Campaign Setting"
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
@@ -78,6 +50,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Zany space adventure"
                 android:inputType="text" />
+
+            <Button
+                android:id="@+id/chatWithDMButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Chat With DungeonMind" />
 
             <TextView
                 android:layout_width="wrap_content"

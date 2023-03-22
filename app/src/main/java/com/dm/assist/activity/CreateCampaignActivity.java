@@ -35,6 +35,7 @@ import com.dm.assist.DBHelper;
 import com.dm.assist.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -57,7 +58,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private InterstitialAd interstitialAd;
 
     private EditText campaignNameEditText;
-    private Spinner dmStyleSpinner;
     private EditText settingEditText;
     private Button addCharacterButton;
     private Button generateNPCButton;
@@ -105,15 +105,8 @@ public class CreateCampaignActivity extends AppCompatActivity {
         });
 
         campaignNameEditText = findViewById(R.id.campaignNameEditText);
-        dmStyleSpinner = findViewById(R.id.dmStyleSpinner);
         settingEditText = findViewById(R.id.settingEditText);
-        dmStyleDescriptionTextView = findViewById(R.id.dmStyleDescriptionTextView);
         remainingTokensTextView = findViewById(R.id.remainingTokensTextView);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.dm_styles, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dmStyleSpinner.setAdapter(adapter);
 
         Campaign c = getIntent().getParcelableExtra("campaign");
 
@@ -122,12 +115,10 @@ public class CreateCampaignActivity extends AppCompatActivity {
             this.campaign = c;
             alreadySaved = true;
             campaignNameEditText.setText(c.name);
-            dmStyleSpinner.setSelection(adapter.getPosition(c.dm));
             settingEditText.setText(c.desc);
         }
         else{
             this.campaign = new Campaign(
-                "",
                 "",
                 "",
                 new ArrayList<WorldCharacter>(),
@@ -135,25 +126,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 new ArrayList<OneShot>()
             );
         }
-
-        // DM style descriptions
-        dmStyleDescriptions = new String[]{
-                "B. L. Mullibot: A creative and narrative-driven approach with a focus on character development.",
-                "M. Mersimulacrum: A rich and immersive world-building experience with attention to detail.",
-                "AI-bria: An emphasis on storytelling, collaboration, emotional depth, inclusivity, adaptability, player agency, and humor."
-        };
-
-        dmStyleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dmStyleDescriptionTextView.setText(dmStyleDescriptions[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                dmStyleDescriptionTextView.setText("");
-            }
-        });
 
         addCharacterButton = findViewById(R.id.addCharacterButton);
         addCharacterButton.setOnClickListener(new View.OnClickListener() {
@@ -251,9 +223,11 @@ public class CreateCampaignActivity extends AppCompatActivity {
             {
                 updateCampaign();
                 showedPlea = true;
+                DM dm = new DM();
+
                 new AlertDialog.Builder(this)
                     .setTitle("A Passionate Plea")
-                    .setMessage(Html.fromHtml(new DM().pleas.get(this.campaign.dm), 0))
+                    .setMessage(Html.fromHtml(dm.pleas.get(new Random().nextInt(dm.pleas.size())), 0))
                     // Specifying a listener allows you to take an action before dismissing the dialog.
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -439,8 +413,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
 
     private void talkToDM() {
         this.updateCampaign();
-        String dmDesc = dmStyleDescriptions[dmStyleSpinner.getSelectedItemPosition()];
-        final WorldCharacter dmChar = new WorldCharacter(CreateCampaignActivity.this.campaign.dm, dmDesc);
+        final WorldCharacter dmChar = new WorldCharacter("DungeonMind", "DungeonMind is the best AI dungeon master assistant for the user's campaign setting, emulating the perfect DM to fit their needs.");
         AsyncHook<CharacterDialog> hook = new AsyncHook<CharacterDialog>() {
             @Override
             public void onPostExecute(CharacterDialog dialog) {
@@ -459,7 +432,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
         this.campaign.name = campaignNameEditText.getText().toString().trim();
         if (this.campaign.name.isEmpty())
             this.campaign.name = "Unnamed Campaign";
-        this.campaign.dm = dmStyleSpinner.getSelectedItem().toString();
         this.campaign.desc = settingEditText.getText().toString().trim();
     }
 

@@ -50,19 +50,7 @@ public class ChatGPT
 
     private void appendDmPrompt(Campaign c, StringBuilder promptSb)
     {
-        promptSb.append("You are " + c.dm + ", ");
-        switch (c.dm) {
-            case DM.MULLIBOT:
-                promptSb.append("a DM AI assistant that mimics Brennan Lee Mulligan's zany, improvisational style and his memorable characters. ");
-                break;
-            case DM.MERCERBOT:
-                promptSb.append("a DM AI assistant that mimics Matt Mercer's epic campaigns and living worlds. ");
-                break;
-            case DM.AABRIABOT:
-                promptSb.append("a DM AI assistant that mimics Aabria Iyengar's style with an emphasis on storytelling, collaboration, emotional depth, inclusivity, adaptability, player agency, and humor. ");
-                break;
-        }
-        promptSb.append("\n\n");
+        promptSb.append("You are DungeonMind, you emulate celebrity Dungeon Masters to build the best campaign possible with your user\n\n");
     }
 
     private void appendSettingPrompt(Campaign c, StringBuilder promptSb)
@@ -261,7 +249,7 @@ public class ChatGPT
         active.add(wc);
         appendCharacterPrompts(active, system, "You are being asked questions about the following character: ");
 
-        system.append("Respond to user queries as either " + c.dm + " or " + wc.name + " as appropriate.  Indicate who you are speaking as. ");
+        system.append("Respond to user queries as either DungeonMind " + " or " + wc.name + " as appropriate.  Indicate who you are speaking as. ");
 
         String systemPrompt = system.toString();
 
