@@ -96,6 +96,6 @@ public class AddPlayerCharacterActivity extends AppCompatActivity {
 
         Campaign activeCampaign = this.getIntent().getParcelableExtra("campaign");
         WorldCharacter wc = constructCharacter();
-        new GenerateDialogTask(activeCampaign, wc, null, hook).execute();
+        new GenerateDialogTask(this.getApplicationContext(), activeCampaign, wc, null, hook).execute();
     }
 }

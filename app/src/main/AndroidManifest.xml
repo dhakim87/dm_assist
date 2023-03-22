@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dm_assist"
         tools:targetApi="31">
+<!--        Fake Ads-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+<!--        Real Ads-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="ca-app-pub-1045037164525954~2810428727"/>-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

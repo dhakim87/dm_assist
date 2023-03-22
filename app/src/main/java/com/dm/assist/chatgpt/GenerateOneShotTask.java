@@ -1,5 +1,7 @@
 package com.dm.assist.chatgpt;
 
+import android.content.Context;
+
 import com.dm.assist.common.AsyncHook;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.OneShot;
@@ -11,13 +13,13 @@ import java.io.IOException;
 
 
 public class GenerateOneShotTask extends ChatGPTTask<OneShot> {
-    public GenerateOneShotTask(Campaign campaign, AsyncHook<OneShot> hook)
+    public GenerateOneShotTask(Context c, Campaign campaign, AsyncHook<OneShot> hook)
     {
-        super(campaign, hook);
+        super(c, campaign, hook);
     }
 
     @Override
     protected OneShot run() throws IOException, JSONException {
-        return new ChatGPT().generateOneShot(this.campaign);
+        return new ChatGPT(this.appContext).generateOneShot(this.campaign);
     }
 }

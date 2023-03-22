@@ -15,11 +15,13 @@ import org.json.JSONException;
 import java.io.IOException;
 
 public abstract class ChatGPTTask<T> extends AsyncTask<Void, Void, T>{
+    Context appContext;
     Campaign campaign;
     AsyncHook<T> hook;
 
-    public ChatGPTTask(Campaign c, AsyncHook<T> hook)
+    public ChatGPTTask(Context appContext, Campaign c, AsyncHook<T> hook)
     {
+        this.appContext = appContext.getApplicationContext();
         this.campaign = c;
         this.hook = hook;
     }

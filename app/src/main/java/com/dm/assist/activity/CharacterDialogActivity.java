@@ -58,18 +58,19 @@ public class CharacterDialogActivity extends AppCompatActivity {
         activeDialog.conversation.add(msg);
         messageAdapter.notifyItemInserted(activeDialog.conversation.size() - 1);
         messageEditText.setText("");
-
+        messageRecyclerView.scrollToPosition(activeDialog.conversation.size() - 1);
         AsyncHook<CharacterDialog> hook = new AsyncHook<CharacterDialog>() {
             @Override
             public void onPostExecute(CharacterDialog d) {
                 String lastMessage = d.conversation.get(d.conversation.size()-1);
                 System.out.println("Received: " + lastMessage);
                 messageAdapter.notifyItemInserted(activeDialog.conversation.size() - 1);
+                messageRecyclerView.scrollToPosition(activeDialog.conversation.size() - 1);
             }
         };
 
         Campaign activeCampaign = this.getIntent().getParcelableExtra("campaign");
         WorldCharacter wc = this.getIntent().getParcelableExtra("character");
-        new GenerateDialogTask(activeCampaign, wc, activeDialog, hook).execute();
+        new GenerateDialogTask(this.getApplicationContext(), activeCampaign, wc, activeDialog, hook).execute();
     }
 }

@@ -1,5 +1,8 @@
 package com.dm.assist.chatgpt;
 
+import android.content.Context;
+
+import com.dm.assist.DBHelper;
 import com.dm.assist.common.CharacterDialog;
 import com.dm.assist.common.DM;
 import com.dm.assist.model.Campaign;
@@ -24,6 +27,12 @@ import java.util.List;
 
 public class ChatGPT
 {
+    Context context;
+    public ChatGPT(Context c)
+    {
+        this.context = c.getApplicationContext();
+    }
+
     private HttpURLConnection setupConnection() throws IOException
     {
         String url = "https://api.openai.com/v1/chat/completions";
@@ -78,7 +87,7 @@ public class ChatGPT
         // Let's just send a handful to save tokens.
         List<WorldCharacter> tempNPCs = new ArrayList<WorldCharacter>(c.npcs);
         Collections.shuffle(tempNPCs);
-        tempNPCs = tempNPCs.subList(0, Math.min(tempNPCs.size(), 3));
+        tempNPCs = tempNPCs.subList(0, Math.min(tempNPCs.size(), 2));
         appendCharacterPrompts(tempNPCs, promptSb, "The NPCs are: \n");
     }
 
@@ -161,6 +170,10 @@ public class ChatGPT
         System.out.println("Response Content: " + responseContent.toString());
 
         JSONObject obj = new JSONObject(responseContent.toString());
+        JSONObject usage = obj.getJSONObject("usage");
+        long charged = usage.getLong("total_tokens");
+        new DBHelper(this.context).addTokens(-charged);
+
         JSONArray choices = obj.getJSONArray("choices");
         JSONObject messageObj = choices.getJSONObject(0);
         JSONObject message = messageObj.getJSONObject("message");

@@ -1,17 +1,21 @@
 package com.dm.assist;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 
 import com.dm.assist.activity.AddPlayerCharacterActivity;
 import com.dm.assist.activity.CreateCampaignActivity;
 import com.dm.assist.adapter.CampaignAdapter;
+import com.dm.assist.common.DM;
 import com.dm.assist.common.OnItemClickListener;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.WorldCharacter;
@@ -36,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         campaignsRecyclerView = findViewById(R.id.campaignsRecyclerView);
         // Add any existing campaigns to the campaignList
-        DBHelper dbHelper = new DBHelper(this.getApplicationContext());
-        campaignList = dbHelper.getAllCampaigns();
-
+        try (DBHelper dbHelper = new DBHelper(this.getApplicationContext())) {
+            campaignList = dbHelper.getAllCampaigns();
+        }
         campaignAdapter = new CampaignAdapter(campaignList);
         campaignAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -59,6 +63,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_NEW_CAMPAIGN);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (campaignList.size() == 0)
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("Greetings, adventurer!")
+                    .setMessage(Html.fromHtml(DM.INTRODUCTION, 0))
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.out.println("User acknowledges welcome dialog");
+                        }
+                    })
+                    .show();
+        }
     }
 
     @Override
