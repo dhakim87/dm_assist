@@ -3,6 +3,7 @@ package com.dm.assist.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,19 @@ public class OneShotAdapter extends RecyclerView.Adapter<OneShotAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OneShot oneShot = oneShots.get(position);
         holder.oneShotNameTextView.setText(oneShot.name);
+
+        holder.deleteOneShotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int clickedPos = holder.getBindingAdapterPosition();
+                // Remove the campaign from your list
+                oneShots.remove(clickedPos);
+
+                // Notify the adapter that the item has been removed
+                notifyItemRemoved(clickedPos);
+                notifyItemRangeChanged(clickedPos, oneShots.size());
+            }
+        });
     }
 
     @Override
@@ -51,9 +65,12 @@ public class OneShotAdapter extends RecyclerView.Adapter<OneShotAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView oneShotNameTextView;
 
+        private ImageButton deleteOneShotButton;
+
         public ViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             oneShotNameTextView = itemView.findViewById(R.id.oneShotNameTextView);
+            deleteOneShotButton = itemView.findViewById(R.id.deleteOneShotButton);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

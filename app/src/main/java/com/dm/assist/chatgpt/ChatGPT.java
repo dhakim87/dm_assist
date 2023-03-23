@@ -39,6 +39,9 @@ public class ChatGPT
         URL endpointURL = new URL(url);
 
         HttpURLConnection connection = (HttpURLConnection) endpointURL.openConnection();
+        connection.setConnectTimeout(30000); // Set connection timeout to 30 seconds
+        connection.setReadTimeout(30000); // Set read timeout to 30 seconds
+
         connection.setRequestMethod("POST");
 
         connection.setRequestProperty("Content-Type", "application/json");
@@ -221,9 +224,9 @@ public class ChatGPT
         appendCampaignPrompt(c, sb);
         // Add task and parsing info
         sb.append("Generate a one shot with plot hooks and dialog connecting the PCs to one or more of the NPCs or the setting. ");
-        sb.append("Build at least 3 encounters, describe appropriate traps and obstacles, include one level appropriate magical item");
-        sb.append("Supply example dialog discussing the situation and interacting with PCs for any npcs involved");
-        sb.append("Supply 10 memorable zingers to give a better understanding of the involved NPCs");
+        sb.append("Build at least 3 encounters, describe appropriate traps and obstacles, include one level appropriate magical item. ");
+        sb.append("Supply example dialog discussing the situation and interacting with PCs for any npcs involved. ");
+        sb.append("Supply 10 memorable zingers by the NPCs about the situation. Do not generate zingers for the PCs.");
         sb.append("\n\n");
         sb.append("Name the one shot after the involved characters and plot. Only a single One Shot should be generated. Phrase your one shot in the form\n" + "Name: \"...\"\n" + "Description: \"...\"");
 

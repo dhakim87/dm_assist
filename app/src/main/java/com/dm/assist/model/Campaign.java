@@ -7,10 +7,13 @@ import java.util.UUID;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@IgnoreExtraProperties
 public class Campaign implements Parcelable
 {
     public String id;
@@ -19,6 +22,31 @@ public class Campaign implements Parcelable
     public List<WorldCharacter> pcs;
     public List<WorldCharacter> npcs;
     public List<OneShot> oneShots;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public List<WorldCharacter> getPcs() {
+        return pcs;
+    }
+
+    public List<WorldCharacter> getNpcs() {
+        return npcs;
+    }
+
+    public List<OneShot> getOneShots() {
+        return oneShots;
+    }
+    public Campaign(){}
 
     public Campaign(String name, String desc, List<WorldCharacter> pcs, List<WorldCharacter> npcs, List<OneShot> oneShots) {
         this.id = UUID.randomUUID().toString();

@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Don't obfuscate model objects that are going into the backend store as json.
+-keepclassmembers class com.dm.assist.model.** {
+  *;
+}

@@ -22,7 +22,7 @@
 <!--            android:value="ca-app-pub-1045037164525954~2810428727"/>-->
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Dm_assist.NoActionBar">
@@ -32,10 +32,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity"/>
         <activity android:name=".activity.CreateCampaignActivity" />
         <activity android:name=".activity.AddPlayerCharacterActivity" />
         <activity android:name=".activity.AddOneShotActivity" />
         <activity android:name=".activity.CharacterDialogActivity" />
+        <activity android:name=".activity.LoadingActivity" />
 
     </application>
 

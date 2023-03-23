@@ -5,16 +5,32 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
+@IgnoreExtraProperties
 public class OneShot implements Parcelable
 {
     public String id;
     public String name;
     public String desc;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+    public OneShot(){}
 
     public OneShot(String name, String desc)
     {

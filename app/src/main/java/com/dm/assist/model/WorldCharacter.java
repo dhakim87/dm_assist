@@ -3,15 +3,32 @@ package com.dm.assist.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
+@IgnoreExtraProperties
 public class WorldCharacter implements Parcelable {
     public String id;
     public String name;
     public String description;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public WorldCharacter(){}
 
     public WorldCharacter(String name, String description) {
         this.id = UUID.randomUUID().toString();

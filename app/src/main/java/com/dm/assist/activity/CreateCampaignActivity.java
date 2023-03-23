@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import android.content.Intent;
 
+import com.dm.assist.activity.LoadingActivity;
 import com.dm.assist.adapter.OneShotAdapter;
 import com.dm.assist.chatgpt.GenerateDialogTask;
 import com.dm.assist.chatgpt.GenerateNPCTask;
@@ -26,7 +27,9 @@ import com.dm.assist.chatgpt.GenerateOneShotTask;
 import com.dm.assist.common.AsyncHook;
 import com.dm.assist.common.CharacterDialog;
 import com.dm.assist.common.DM;
+import com.dm.assist.common.NetworkRequestTracker;
 import com.dm.assist.common.OnItemClickListener;
+import com.dm.assist.db.CloudDB;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.OneShot;
 import com.dm.assist.model.WorldCharacter;
@@ -46,6 +49,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class CreateCampaignActivity extends AppCompatActivity {
     public static boolean showedPlea = false;
@@ -382,6 +387,8 @@ public class CreateCampaignActivity extends AppCompatActivity {
     }
 
     private void generateNPC() {
+        NetworkRequestTracker.startRequest();
+        startActivity(new Intent(CreateCampaignActivity.this, LoadingActivity.class));
         AsyncHook<WorldCharacter> hook = new AsyncHook<WorldCharacter>() {
             @Override
             public void onPostExecute(WorldCharacter npcDescription) {
@@ -390,6 +397,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
                 intent.putExtra("character", npcDescription);
                 startActivityForResult(intent, REQUEST_NEW_NPC);
+                NetworkRequestTracker.endRequest();
             }
         };
         this.updateCampaign();
@@ -397,6 +405,8 @@ public class CreateCampaignActivity extends AppCompatActivity {
     }
 
     private void generateOneShot() {
+        NetworkRequestTracker.startRequest();
+        startActivity(new Intent(CreateCampaignActivity.this, LoadingActivity.class));
         AsyncHook<OneShot> hook = new AsyncHook<OneShot>() {
             @Override
             public void onPostExecute(OneShot oneShot) {
@@ -405,6 +415,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
                 intent.putExtra("oneShot", oneShot);
                 startActivityForResult(intent, REQUEST_NEW_ONE_SHOT);
+                NetworkRequestTracker.endRequest();
             }
         };
         this.updateCampaign();
@@ -412,7 +423,9 @@ public class CreateCampaignActivity extends AppCompatActivity {
     }
 
     private void talkToDM() {
+        startActivity(new Intent(CreateCampaignActivity.this, LoadingActivity.class));
         this.updateCampaign();
+        NetworkRequestTracker.startRequest();
         final WorldCharacter dmChar = new WorldCharacter("DungeonMind", "DungeonMind is the best AI dungeon master assistant for the user's campaign setting, emulating the perfect DM to fit their needs.");
         AsyncHook<CharacterDialog> hook = new AsyncHook<CharacterDialog>() {
             @Override
@@ -423,6 +436,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 intent.putExtra("character", dmChar);
                 intent.putExtra("dialog", dialog);
                 startActivity(intent);
+                NetworkRequestTracker.endRequest();
             }
         };
         new GenerateDialogTask(this.getApplicationContext(), this.campaign, dmChar, null, hook).execute();
@@ -438,15 +452,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private void saveCampaign(boolean quit) {
         this.updateCampaign();
 
-        DBHelper dbHelper = new DBHelper(this.getApplicationContext());
-
-        if (!alreadySaved) {
-            dbHelper.addCampaign(this.campaign);
-            alreadySaved = true;
-        }
-        else {
-            dbHelper.updateCampaign(this.campaign);
-        }
+        new CloudDB().setCampaign(this.campaign);
 
         if (quit)
         {

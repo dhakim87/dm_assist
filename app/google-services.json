@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1060614935630",
+    "project_id": "dm-assist-381402",
+    "storage_bucket": "dm-assist-381402.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060614935630:android:5fa756eb7f301d637adf1f",
+        "android_client_info": {
+          "package_name": "com.dm.assist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060614935630-178p2u7tcap0eib5svllglr0vcks17s4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJuiB0Esn747-9jxm5Cu5hOVoWQO9_OHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1060614935630-178p2u7tcap0eib5svllglr0vcks17s4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

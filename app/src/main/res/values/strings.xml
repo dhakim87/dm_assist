@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">DM AI Assistant</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="loading_messages">
+        <item>Searching nearby taverns...</item>
+        <item>Weaving loose threads...</item>
+        <item>Consulting the oracles...</item>
+        <item>Gathering rumors and legends...</item>
+        <item>Rolling the dice...</item>
+        <item>Charging up the magic...</item>
+    </string-array>
 </resources>
