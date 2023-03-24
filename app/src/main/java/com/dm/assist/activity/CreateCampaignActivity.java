@@ -6,20 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import android.content.Intent;
 
-import com.dm.assist.activity.LoadingActivity;
 import com.dm.assist.adapter.OneShotAdapter;
 import com.dm.assist.chatgpt.GenerateDialogTask;
 import com.dm.assist.chatgpt.GenerateNPCTask;
@@ -28,13 +23,13 @@ import com.dm.assist.common.AsyncHook;
 import com.dm.assist.common.CharacterDialog;
 import com.dm.assist.common.DM;
 import com.dm.assist.common.NetworkRequestTracker;
+import com.dm.assist.common.Observable;
 import com.dm.assist.common.OnItemClickListener;
 import com.dm.assist.db.CloudDB;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.OneShot;
 import com.dm.assist.model.WorldCharacter;
 import com.dm.assist.adapter.CharacterAdapter;
-import com.dm.assist.DBHelper;
 import com.dm.assist.R;
 
 import java.util.ArrayList;
@@ -49,8 +44,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ValueEventListener;
 
 public class CreateCampaignActivity extends AppCompatActivity {
     public static boolean showedPlea = false;
@@ -84,7 +78,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private OneShotAdapter oneShotAdapter;
 
     private Campaign campaign;
-    private boolean alreadySaved = false;
+    private ValueEventListener tokenWatch;
 
     private static final int REQUEST_NEW_PC = 1;
     private static final int REQUEST_EDIT_PC = 2;
@@ -113,12 +107,19 @@ public class CreateCampaignActivity extends AppCompatActivity {
         settingEditText = findViewById(R.id.settingEditText);
         remainingTokensTextView = findViewById(R.id.remainingTokensTextView);
 
+        tokenWatch = new CloudDB().watchTokens(new Observable<Long>(){
+            @Override
+            public void onChange(Long val) {
+                if (val == null)
+                    val = 10000L;
+                updateTokens(val);
+            }
+        });
         Campaign c = getIntent().getParcelableExtra("campaign");
 
         if (c != null)
         {
             this.campaign = c;
-            alreadySaved = true;
             campaignNameEditText.setText(c.name);
             settingEditText.setText(c.desc);
         }
@@ -209,28 +210,22 @@ public class CreateCampaignActivity extends AppCompatActivity {
         oneShotRecyclerView.setAdapter(oneShotAdapter);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void updateTokens(long tokens){
+        remainingTokensTextView.setText("AI Tokens: " + tokens);
+        if (tokens < 0)
+            remainingTokensTextView.setTextColor(0xFFFF0000);
+        else
+            remainingTokensTextView.setTextColor(0xFF000000);
 
-        try (DBHelper helper = new DBHelper(this)) {
-            long tokens = helper.getTokens();
+        // TODO Give plea from ChatGPT to get more tokens when user is between 0 and X tokens
+        //  Then if they hit 0, start showing ads.
+        if (tokens > 0 && tokens < 2500 && !showedPlea)
+        {
+            updateCampaign();
+            showedPlea = true;
+            DM dm = new DM();
 
-            remainingTokensTextView.setText("AI Tokens: " + tokens);
-            if (tokens < 0)
-                remainingTokensTextView.setTextColor(0xFFFF0000);
-            else
-                remainingTokensTextView.setTextColor(0xFF000000);
-
-            // TODO Give plea from ChatGPT to get more tokens when user is between 0 and X tokens
-            //  Then if they hit 0, start showing ads.
-            if (tokens > 0 && tokens < 2500 && !showedPlea)
-            {
-                updateCampaign();
-                showedPlea = true;
-                DM dm = new DM();
-
-                new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setTitle("A Passionate Plea")
                     .setMessage(Html.fromHtml(dm.pleas.get(new Random().nextInt(dm.pleas.size())), 0))
                     // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -247,80 +242,81 @@ public class CreateCampaignActivity extends AppCompatActivity {
                         }
                     })
                     .show();
-            }
+        }
 
-            if (tokens < 0) {
-                System.out.println("Has an ad to show: " + (this.interstitialAd != null));
-                if (this.interstitialAd == null && !this.loadingAd) {
-                    System.out.println("Loading ad...");
-                    this.loadingAd = true;
-                    AdRequest adRequest = new AdRequest.Builder().build();
-                    InterstitialAd.load(this, AD_ID, adRequest,
-                            new InterstitialAdLoadCallback() {
-                                @Override
-                                public void onAdLoaded(InterstitialAd interstitialAd) {
-                                    System.out.println("Loaded new ad");
-                                    CreateCampaignActivity.this.interstitialAd = interstitialAd;
-                                    CreateCampaignActivity.this.loadingAd = false;
-                                }
-
-                                @Override
-                                public void onAdFailedToLoad(LoadAdError loadAdError) {
-                                    System.out.println("Failed to load ad");
-                                    CreateCampaignActivity.this.interstitialAd = null;
-                                    CreateCampaignActivity.this.loadingAd = false;
-                                }
-                            });
-                } else if (this.interstitialAd != null) {
-                    this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdClicked() {
-                            // Called when a click is recorded for an ad.
-                            System.out.println("Ad was clicked.");
-                        }
-
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            // Called when ad is dismissed.
-                            // Set the ad reference to null so you don't show the ad a second time.
-                            System.out.println("Ad dismissed fullscreen content.");
-                            CreateCampaignActivity.this.interstitialAd = null;
-                            CreateCampaignActivity.this.loadingAd = false;
-                        }
-
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {
-                            // Called when ad fails to show.
-                            System.out.println("Ad failed to show fullscreen content.");
-                            CreateCampaignActivity.this.interstitialAd = null;
-                            CreateCampaignActivity.this.loadingAd = false;
-                        }
-
-                        @Override
-                        public void onAdImpression() {
-                            // Called when an impression is recorded for an ad.
-                            System.out.println("Ad recorded an impression.");
-                            // Is there a way to find out how much this impression was worth?
-                            // A video ad should be worth 2500 AI tokens, full screen banners should be
-                            // worth way way less.
-                            try (DBHelper helper = new DBHelper(CreateCampaignActivity.this.getApplicationContext())) {
-                                helper.addTokens(2500);
+        if (tokens < 0) {
+            System.out.println("Has an ad to show: " + (this.interstitialAd != null));
+            if (this.interstitialAd == null && !this.loadingAd) {
+                System.out.println("Loading ad...");
+                this.loadingAd = true;
+                AdRequest adRequest = new AdRequest.Builder().build();
+                InterstitialAd.load(this, AD_ID, adRequest,
+                        new InterstitialAdLoadCallback() {
+                            @Override
+                            public void onAdLoaded(InterstitialAd interstitialAd) {
+                                System.out.println("Loaded new ad");
+                                CreateCampaignActivity.this.interstitialAd = interstitialAd;
+                                CreateCampaignActivity.this.loadingAd = false;
                             }
 
-                            //And possibly start loading an ad, ugh feels so dirty.
-                        }
+                            @Override
+                            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                                System.out.println("Failed to load ad");
+                                CreateCampaignActivity.this.interstitialAd = null;
+                                CreateCampaignActivity.this.loadingAd = false;
+                            }
+                        });
+            } else if (this.interstitialAd != null) {
+                this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdClicked() {
+                        // Called when a click is recorded for an ad.
+                        System.out.println("Ad was clicked.");
+                    }
 
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            // Called when ad is shown.
-                            System.out.println("Ad showed fullscreen content.");
-                        }
-                    });
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        // Called when ad is dismissed.
+                        // Set the ad reference to null so you don't show the ad a second time.
+                        System.out.println("Ad dismissed fullscreen content.");
+                        CreateCampaignActivity.this.interstitialAd = null;
+                        CreateCampaignActivity.this.loadingAd = false;
+                    }
 
-                    this.interstitialAd.show(this);
-                }
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                        // Called when ad fails to show.
+                        System.out.println("Ad failed to show fullscreen content.");
+                        CreateCampaignActivity.this.interstitialAd = null;
+                        CreateCampaignActivity.this.loadingAd = false;
+                    }
+
+                    @Override
+                    public void onAdImpression() {
+                        // Called when an impression is recorded for an ad.
+                        System.out.println("Ad recorded an impression.");
+
+                        //TODO FIXME HACK: Talk to google cloud func
+
+                        //And possibly start loading an ad, ugh feels so dirty.
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        // Called when ad is shown.
+                        System.out.println("Ad showed fullscreen content.");
+                    }
+                });
+
+                this.interstitialAd.show(this);
             }
         }
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+
+        new CloudDB().unwatchTokens(this.tokenWatch);
     }
 
     @Override

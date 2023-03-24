@@ -24,6 +24,7 @@ import com.dm.assist.db.CloudDB;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.WorldCharacter;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_NEW_CAMPAIGN = 1;
     private static final int REQUEST_EDIT_CAMPAIGN = 2;
 
+    private ValueEventListener campaignWatch = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         campaignsRecyclerView = findViewById(R.id.campaignsRecyclerView);
 
         campaignList = new ArrayList<Campaign>();
-        campaignAdapter = new CampaignAdapter(campaignList, new DBHelper(getApplicationContext()));
+        campaignAdapter = new CampaignAdapter(campaignList);
         // Start syncing with backend
         CloudDB db = new CloudDB();
-        db.watchAllCampaigns(new Observable<List<Campaign>>(){
+        this.campaignWatch = db.watchAllCampaigns(new Observable<List<Campaign>>(){
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onChange(List<Campaign> val) {
@@ -100,5 +103,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        new CloudDB().unwatchAllCampaigns(this.campaignWatch);
     }
 }

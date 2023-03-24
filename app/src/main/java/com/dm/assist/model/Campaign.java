@@ -46,7 +46,11 @@ public class Campaign implements Parcelable
     public List<OneShot> getOneShots() {
         return oneShots;
     }
-    public Campaign(){}
+    public Campaign(){
+        this.pcs = new ArrayList<WorldCharacter>();
+        this.npcs = new ArrayList<WorldCharacter>();
+        this.oneShots = new ArrayList<OneShot>();
+    }
 
     public Campaign(String name, String desc, List<WorldCharacter> pcs, List<WorldCharacter> npcs, List<OneShot> oneShots) {
         this.id = UUID.randomUUID().toString();

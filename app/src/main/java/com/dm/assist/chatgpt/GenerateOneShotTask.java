@@ -10,6 +10,7 @@ import com.dm.assist.model.WorldCharacter;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 
 public class GenerateOneShotTask extends ChatGPTTask<OneShot> {
@@ -19,7 +20,7 @@ public class GenerateOneShotTask extends ChatGPTTask<OneShot> {
     }
 
     @Override
-    protected OneShot run() throws IOException, JSONException {
+    protected OneShot run() throws IOException, JSONException, ExecutionException, InterruptedException {
         return new ChatGPT(this.appContext).generateOneShot(this.campaign);
     }
 }

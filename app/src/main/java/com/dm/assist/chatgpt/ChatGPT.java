@@ -2,12 +2,15 @@ package com.dm.assist.chatgpt;
 
 import android.content.Context;
 
-import com.dm.assist.DBHelper;
 import com.dm.assist.common.CharacterDialog;
-import com.dm.assist.common.DM;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.OneShot;
 import com.dm.assist.model.WorldCharacter;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class ChatGPT
@@ -33,19 +37,23 @@ public class ChatGPT
         this.context = c.getApplicationContext();
     }
 
-    private HttpURLConnection setupConnection() throws IOException
-    {
-        String url = "https://api.openai.com/v1/chat/completions";
+    private HttpURLConnection setupConnection() throws IOException, ExecutionException, InterruptedException {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null)
+            return null;
+        Task<GetTokenResult> task = user.getIdToken(false);
+        Tasks.await(task);
+        String url = "https://us-central1-dm-assist-381402.cloudfunctions.net/chatGPT";
         URL endpointURL = new URL(url);
 
         HttpURLConnection connection = (HttpURLConnection) endpointURL.openConnection();
-        connection.setConnectTimeout(30000); // Set connection timeout to 30 seconds
-        connection.setReadTimeout(30000); // Set read timeout to 30 seconds
+        connection.setConnectTimeout(60000); // Set connection timeout to 60 seconds
+        connection.setReadTimeout(60000); // Set read timeout to 60 seconds
 
         connection.setRequestMethod("POST");
 
         connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer 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");
+        connection.setRequestProperty("Authorization", "Bearer " + task.getResult().getToken());
         connection.setDoInput(true);
         connection.setDoOutput(true);
         return connection;
@@ -161,9 +169,6 @@ public class ChatGPT
         System.out.println("Response Content: " + responseContent.toString());
 
         JSONObject obj = new JSONObject(responseContent.toString());
-        JSONObject usage = obj.getJSONObject("usage");
-        long charged = usage.getLong("total_tokens");
-        new DBHelper(this.context).addTokens(-charged);
 
         JSONArray choices = obj.getJSONArray("choices");
         JSONObject messageObj = choices.getJSONObject(0);
@@ -193,7 +198,7 @@ public class ChatGPT
         return new String[]{name, desc};
     }
 
-    public WorldCharacter generateNPC(Campaign c) throws IOException, JSONException {
+    public WorldCharacter generateNPC(Campaign c) throws IOException, JSONException, ExecutionException, InterruptedException {
         System.out.println("Generating NPC...");
         HttpURLConnection connection = setupConnection();
 
@@ -217,7 +222,7 @@ public class ChatGPT
         return new WorldCharacter(namedesc[0], namedesc[1]);
     }
 
-    public OneShot generateOneShot(Campaign c) throws IOException, JSONException {
+    public OneShot generateOneShot(Campaign c) throws IOException, JSONException, ExecutionException, InterruptedException {
         HttpURLConnection connection = setupConnection();
 
         StringBuilder sb = new StringBuilder();
@@ -241,8 +246,7 @@ public class ChatGPT
         return new OneShot(namedesc[0], namedesc[1]);
     }
 
-    public CharacterDialog talkToCharacter(Campaign c, WorldCharacter wc, CharacterDialog activeDialog) throws IOException, JSONException
-    {
+    public CharacterDialog talkToCharacter(Campaign c, WorldCharacter wc, CharacterDialog activeDialog) throws IOException, JSONException, ExecutionException, InterruptedException {
         HttpURLConnection connection = setupConnection();
 
         StringBuilder system = new StringBuilder();

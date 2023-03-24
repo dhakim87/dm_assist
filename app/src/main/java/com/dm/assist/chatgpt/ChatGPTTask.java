@@ -13,6 +13,7 @@ import com.dm.assist.model.WorldCharacter;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public abstract class ChatGPTTask<T> extends AsyncTask<Void, Void, T>{
     Context appContext;
@@ -26,7 +27,7 @@ public abstract class ChatGPTTask<T> extends AsyncTask<Void, Void, T>{
         this.hook = hook;
     }
 
-    protected abstract T run() throws IOException, JSONException;
+    protected abstract T run() throws IOException, JSONException, ExecutionException, InterruptedException;
 
     protected T doInBackground(Void... voids) {
         try {

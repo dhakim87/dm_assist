@@ -10,6 +10,7 @@ import com.dm.assist.model.WorldCharacter;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 
 public class GenerateDialogTask extends ChatGPTTask<CharacterDialog> {
@@ -25,7 +26,7 @@ public class GenerateDialogTask extends ChatGPTTask<CharacterDialog> {
     }
 
     @Override
-    protected CharacterDialog run() throws IOException, JSONException {
+    protected CharacterDialog run() throws IOException, JSONException, ExecutionException, InterruptedException {
         return new ChatGPT(this.appContext).talkToCharacter(this.campaign, this.wc, this.activeDialog);
     }
 }

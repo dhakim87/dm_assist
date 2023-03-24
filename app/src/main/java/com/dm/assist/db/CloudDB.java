@@ -34,6 +34,10 @@ public class CloudDB {
         return this.database.getReference().child("campaign").child(activeUser.getUid());
     }
 
+    private DatabaseReference refTokens(){
+        return this.database.getReference().child("token").child(activeUser.getUid());
+    }
+
     public void setCampaign(Campaign c) {
         refCampaigns().child(c.id).setValue(c);
     }
@@ -57,9 +61,30 @@ public class CloudDB {
         return postListener;
     }
 
+    public ValueEventListener watchTokens(Observable<Long> tokenWatcher){
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tokenWatcher.onChange(snapshot.getValue(long.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+        };
+        refTokens().addValueEventListener(listener);
+        return listener;
+    }
+
     public void unwatchAllCampaigns(ValueEventListener listener)
     {
         refCampaigns().removeEventListener(listener);
+    }
+
+    public void unwatchTokens(ValueEventListener listener)
+    {
+        refTokens().removeEventListener(listener);
     }
 
     public void deleteCampaign(String campaignID) {

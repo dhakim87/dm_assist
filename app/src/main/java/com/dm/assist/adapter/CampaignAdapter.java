@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dm.assist.DBHelper;
 import com.dm.assist.common.OnItemClickListener;
 import com.dm.assist.db.CloudDB;
 import com.dm.assist.model.Campaign;
@@ -19,11 +18,9 @@ import java.util.List;
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.ViewHolder> {
 
     private List<Campaign> campaigns;
-    private DBHelper dbHelper;
 
-    public CampaignAdapter(List<Campaign> campaigns, DBHelper dbHelper) {
+    public CampaignAdapter(List<Campaign> campaigns) {
         this.campaigns = campaigns;
-        this.dbHelper = dbHelper;
     }
 
     public OnItemClickListener onItemClickListener;
