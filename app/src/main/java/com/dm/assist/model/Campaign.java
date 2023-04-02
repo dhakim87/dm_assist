@@ -87,15 +87,28 @@ public class Campaign implements Parcelable
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeString(this.desc);
-        dest.writeInt(this.pcs.size());
-        for (int i = 0; i < this.pcs.size(); i++)
-            this.pcs.get(i).writeToParcel(dest, flags);
-        dest.writeInt(this.npcs.size());
-        for (int i = 0; i < this.npcs.size(); i++)
-            this.npcs.get(i).writeToParcel(dest, flags);
-        dest.writeInt(this.oneShots.size());
-        for (int i = 0; i < this.oneShots.size(); i++)
-            this.oneShots.get(i).writeToParcel(dest, flags);
+
+        if (this.pcs == null)
+            dest.writeInt(0);
+        else {
+            dest.writeInt(this.pcs.size());
+            for (int i = 0; i < this.pcs.size(); i++)
+                this.pcs.get(i).writeToParcel(dest, flags);
+        }
+        if (this.npcs == null)
+            dest.writeInt(0);
+        else {
+            dest.writeInt(this.npcs.size());
+            for (int i = 0; i < this.npcs.size(); i++)
+                this.npcs.get(i).writeToParcel(dest, flags);
+        }
+        if (this.oneShots == null)
+            dest.writeInt(0);
+        else {
+            dest.writeInt(this.oneShots.size());
+            for (int i = 0; i < this.oneShots.size(); i++)
+                this.oneShots.get(i).writeToParcel(dest, flags);
+        }
     }
 
     @Override
@@ -114,60 +127,4 @@ public class Campaign implements Parcelable
             return new Campaign[size];
         }
     };
-
-    public static Campaign fromJson(String id, JSONObject obj) throws JSONException {
-        ArrayList<WorldCharacter> pcs = new ArrayList<WorldCharacter>();
-        ArrayList<WorldCharacter> npcs = new ArrayList<WorldCharacter>();
-        ArrayList<OneShot> oneShots = new ArrayList<OneShot>();
-
-        JSONArray jpcs = obj.getJSONArray("pcs");
-        JSONArray jnpcs = obj.getJSONArray("npcs");
-        JSONArray jshots = obj.getJSONArray("oneShots");
-
-        for (int i = 0; i < jpcs.length(); i++)
-            pcs.add(WorldCharacter.fromJson(jpcs.getJSONObject(i)));
-
-        for (int i = 0; i < jnpcs.length(); i++)
-            npcs.add(WorldCharacter.fromJson(jnpcs.getJSONObject(i)));
-
-        for (int i = 0; i < jshots.length(); i++)
-            oneShots.add(OneShot.fromJson(jshots.getJSONObject(i)));
-
-        Campaign c = new Campaign(
-            obj.getString("name"),
-            obj.getString("desc"),
-            pcs,
-            npcs,
-            oneShots
-        );
-        c.id = id;
-        return c;
-    }
-
-    public JSONObject toJson() throws JSONException {
-        JSONObject obj = new JSONObject();
-        obj.put("id", this.id);
-        obj.put("name", this.name);
-        obj.put("desc", this.desc);
-
-        JSONArray jpcs = new JSONArray();
-        for (WorldCharacter pc: this.pcs)
-            jpcs.put(pc.toJson());
-
-        JSONArray jnpcs = new JSONArray();
-        for (WorldCharacter npc: this.npcs)
-            jnpcs.put(npc.toJson());
-
-        JSONArray jshots = new JSONArray();
-        for (OneShot os: this.oneShots)
-            jshots.put(os.toJson());
-
-        obj.put("pcs", jpcs);
-        obj.put("npcs", jnpcs);
-        obj.put("oneShots", jshots);
-
-        return obj;
-    }
-
-
 }
