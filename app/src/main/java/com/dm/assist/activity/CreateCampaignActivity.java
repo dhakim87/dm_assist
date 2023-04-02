@@ -107,14 +107,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
         settingEditText = findViewById(R.id.settingEditText);
         remainingTokensTextView = findViewById(R.id.remainingTokensTextView);
 
-        tokenWatch = new CloudDB().watchTokens(new Observable<Long>(){
-            @Override
-            public void onChange(Long val) {
-                if (val == null)
-                    val = 10000L;
-                updateTokens(val);
-            }
-        });
         Campaign c = getIntent().getParcelableExtra("campaign");
 
         if (c != null)
@@ -219,7 +211,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
 
         // TODO Give plea from ChatGPT to get more tokens when user is between 0 and X tokens
         //  Then if they hit 0, start showing ads.
-        if (tokens > 0 && tokens < 2500 && !showedPlea)
+        if (tokens < 2500 && !showedPlea)
         {
             updateCampaign();
             showedPlea = true;
@@ -313,10 +305,26 @@ public class CreateCampaignActivity extends AppCompatActivity {
         }
     }
 
+    protected void onResume() {
+        super.onResume();
+
+        tokenWatch = new CloudDB().watchTokens(new Observable<Long>(){
+            @Override
+            public void onChange(Long val) {
+                if (val == null)
+                    val = 10000L;
+                updateTokens(val);
+            }
+        });
+    }
+
+    protected void onPause() {
+        super.onPause();
+        new CloudDB().unwatchTokens(this.tokenWatch);
+    }
+
     protected void onDestroy() {
         super.onDestroy();
-
-        new CloudDB().unwatchTokens(this.tokenWatch);
     }
 
     @Override
