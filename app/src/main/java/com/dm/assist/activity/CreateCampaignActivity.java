@@ -430,7 +430,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
         startActivity(new Intent(CreateCampaignActivity.this, LoadingActivity.class));
         this.updateCampaign();
         NetworkRequestTracker.startRequest();
-        final WorldCharacter dmChar = new WorldCharacter("DungeonMind", "DungeonMind is the best AI dungeon master assistant for the user's campaign setting, emulating the perfect DM to fit their needs.");
+        final WorldCharacter dmChar = new WorldCharacter("DungeonMind", "DungeonMind is the best AI game master assistant for the user's campaign setting, emulating the perfect DM to fit their needs.");
         AsyncHook<CharacterDialog> hook = new AsyncHook<CharacterDialog>() {
             @Override
             public void onPostExecute(CharacterDialog dialog) {
