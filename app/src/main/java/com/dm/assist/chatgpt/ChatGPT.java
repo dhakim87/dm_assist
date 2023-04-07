@@ -51,7 +51,6 @@ public class ChatGPT
         connection.setReadTimeout(60000); // Set read timeout to 60 seconds
 
         connection.setRequestMethod("POST");
-
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Authorization", "Bearer " + task.getResult().getToken());
         connection.setDoInput(true);

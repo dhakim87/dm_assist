@@ -20,6 +20,7 @@ import com.dm.assist.adapter.CampaignAdapter;
 import com.dm.assist.common.DM;
 import com.dm.assist.common.Observable;
 import com.dm.assist.common.OnItemClickListener;
+import com.dm.assist.common.PurchaseTracker;
 import com.dm.assist.db.CloudDB;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.WorldCharacter;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_NEW_CAMPAIGN);
             }
         });
+
+        PurchaseTracker.getInstance(this.getApplicationContext()).startTracking();
     }
 
     private void tryIntro()
@@ -109,5 +112,6 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onDestroy();
         new CloudDB().unwatchAllCampaigns(this.campaignWatch);
+        PurchaseTracker.getInstance(this.getApplicationContext()).endTracking();
     }
 }

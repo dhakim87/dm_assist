@@ -200,14 +200,25 @@ public class CreateCampaignActivity extends AppCompatActivity {
         });
         oneShotRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         oneShotRecyclerView.setAdapter(oneShotAdapter);
+
+        remainingTokensTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CreateCampaignActivity.this, InAppPurchasesActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void updateTokens(long tokens){
-        remainingTokensTextView.setText("AI Tokens: " + tokens);
-        if (tokens < 0)
+        if (tokens < 0) {
+            remainingTokensTextView.setText("AI Tokens: " + tokens + " (Ads Enabled)");
             remainingTokensTextView.setTextColor(0xFFFF0000);
-        else
+        }
+        else {
+            remainingTokensTextView.setText("AI Tokens: " + tokens);
             remainingTokensTextView.setTextColor(0xFF000000);
+        }
 
         // TODO Give plea from ChatGPT to get more tokens when user is between 0 and X tokens
         //  Then if they hit 0, start showing ads.
@@ -224,13 +235,14 @@ public class CreateCampaignActivity extends AppCompatActivity {
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            System.out.println("User says Yes give me money");
+                            Intent intent = new Intent(CreateCampaignActivity.this, InAppPurchasesActivity.class);
+                            startActivity(intent);
                         }
                     })
                     // A null listener allows the button to dismiss the dialog and take no further action.
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            System.out.println("User says no, they'd rather watch ads");
+                            System.out.println("User would rather watch ads");
                         }
                     })
                     .show();
@@ -253,7 +265,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
 
                             @Override
                             public void onAdFailedToLoad(LoadAdError loadAdError) {
-                                System.out.println("Failed to load ad");
+                                System.out.println("Failed to load ad:" + loadAdError);
                                 CreateCampaignActivity.this.interstitialAd = null;
                                 CreateCampaignActivity.this.loadingAd = false;
                             }
@@ -397,10 +409,12 @@ public class CreateCampaignActivity extends AppCompatActivity {
             @Override
             public void onPostExecute(WorldCharacter npcDescription) {
                 updateCampaign();
-                Intent intent = new Intent(CreateCampaignActivity.this, AddPlayerCharacterActivity.class);
-                intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
-                intent.putExtra("character", npcDescription);
-                startActivityForResult(intent, REQUEST_NEW_NPC);
+                if (npcDescription != null) {
+                    Intent intent = new Intent(CreateCampaignActivity.this, AddPlayerCharacterActivity.class);
+                    intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
+                    intent.putExtra("character", npcDescription);
+                    startActivityForResult(intent, REQUEST_NEW_NPC);
+                }
                 NetworkRequestTracker.endRequest();
             }
         };

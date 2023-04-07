@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DungeonMind</string>
+    <string name="app_name">DungeonMind AI</string>
     <string name="action_settings">Settings</string>
 
     <string-array name="loading_messages">
