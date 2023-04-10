@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         IdpResponse response = result.getIdpResponse();
         System.out.println("Got a sign in result");
+        System.out.println(result.getResultCode());
         System.out.println(response);
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
@@ -73,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             // response.getError().getErrorCode() and handle the error.
             // ...
             // Uhhh...
+            FirebaseAuth.getInstance().signOut();
             finish();
         }
     }
