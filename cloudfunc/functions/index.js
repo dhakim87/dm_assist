@@ -188,7 +188,8 @@ exports.chatGPT = functions.https.onRequest(async (req, res) => {
   }
 
   console.log("Awaiting chatGPT");
-  const response = await chatWithGPT(req.body); // TODO should take uid someday
+  req.body.user = uid; // Tag the request by the user id for tracking bad behavior.
+  const response = await chatWithGPT(req.body);
   if (response === null) {
     res.status(500).send("Error posting data to ChatGPT");
     return;
