@@ -73,6 +73,7 @@ public class PurchaseTracker implements PurchasesUpdatedListener {
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                     Toast.makeText(appContext, "Cannot communicate with Google Play Services, In App Purchases unavailable", Toast.LENGTH_LONG).show();
+                    connected = false;
                 } else {
                     refreshPurchases();
                     connected = true;

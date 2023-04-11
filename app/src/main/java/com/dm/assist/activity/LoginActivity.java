@@ -59,8 +59,8 @@ public class LoginActivity extends AppCompatActivity {
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         IdpResponse response = result.getIdpResponse();
         System.out.println("Got a sign in result");
-        System.out.println(result.getResultCode());
-        System.out.println(response);
+//        System.out.println(result.getResultCode());
+//        System.out.println(response);
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
