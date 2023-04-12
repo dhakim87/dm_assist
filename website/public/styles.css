@@ -1,0 +1,194 @@
+/* Reset some default browser styles */
+html, body, h1, h2, p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lato', Arial, sans-serif;
+  line-height: 1.6;
+  color: #AE4F02;
+}
+
+header {
+  background-color: #030204;
+  color: #AE4F02;
+  text-align: center;
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.hero {
+  background-color: #030204;
+  padding: 2rem;
+  text-align: center;
+}
+
+.hero p {
+  color: #AE4F02;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+.discord-button {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.discord-button a {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #7289DA;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-out;
+}
+
+.discord-button a:hover {
+  background-color: #677bc4;
+}
+
+.download-button {
+  display: inline-block;
+  background-color: #AE4F02;
+  color: #030204;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 5px;
+}
+
+.download-button:hover {
+  background-color: #8C3C01;
+}
+
+footer {
+  background-color: #030204;
+  color: #AE4F02;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.logo {
+  max-width: 150px;
+  margin-bottom: 1rem;
+}
+
+.feature-image {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto 1rem auto; /* Center the image and add some margin below */
+}
+
+.screenshots {
+  /*background-color: #030204;*/
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.carousel img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.slick-dots {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.slick-dots li button:before {
+  color: #AE4F02;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #AE4F02;
+  opacity: 1;
+}
+
+.screenshot-frame {
+  display: block;
+  max-width: 300px; /* Adjust this value to your desired phone size */
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.carousel img {
+  width: 100%;
+}
+
+.carousel-container {
+  max-width: 300px; /* Adjust this value to your desired carousel size */
+  margin: 0 auto;
+  border-radius: 30px;
+  background-color: #030204;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+/*  border: 1px solid #AE4F02; */
+/*  border-radius: 5px; */
+  overflow: hidden;
+}
+
+.app-features {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.features-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  text-align: center;
+}
+
+.feature-item {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem;
+  box-sizing: border-box;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.feature-item img {
+  max-width: 64px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+/* Media queries for responsive design */
+@media screen and (min-width: 768px) {
+  .features-container {
+    justify-content: space-between;
+  }
+
+  .feature-item {
+    width: calc(33.333% - 2rem);
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .features-container {
+    justify-content: space-between;
+  }
+
+  .feature-item {
+    width: calc(25% - 2rem);
+  }
+}
