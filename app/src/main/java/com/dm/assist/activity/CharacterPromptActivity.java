@@ -19,6 +19,8 @@ import com.dm.assist.common.NetworkRequestTracker;
 import com.dm.assist.model.Campaign;
 import com.dm.assist.model.WorldCharacter;
 
+import java.util.Random;
+
 public class CharacterPromptActivity extends AppCompatActivity {
 
     EditText promptEditText;
@@ -34,6 +36,21 @@ public class CharacterPromptActivity extends AppCompatActivity {
         generateButton = findViewById(R.id.buttonGenerate);
 
         campaign = this.getIntent().getParcelableExtra("campaign");
+
+        String[] hints = new String[]{
+                "DungeonMind, please generate a wise old wizard with a mysterious past.",
+                "Can you create a cunning goblin tinkerer for me, DungeonMind?",
+                "Create a powerful, enigmatic sorceress with hidden motives, DungeonMind.",
+                "How about a celestial being disguised as a simple merchant, DungeonMind?",
+                "DungeonMind, please create a time-traveling scientist with a personal mission.",
+                "Can you create a superhero with the ability to manipulate gravity, DungeonMind?",
+                "Let's see a steampunk inventor with a mechanical sidekick, DungeonMind.",
+                "DungeonMind, I'm in need of a noir detective with psychic abilities.",
+                "DungeonMind, bring forth a powerful AI entity that has developed sentience.",
+                "How about a shapeshifting creature from folklore, trying to adapt to the modern world, DungeonMind?"
+        };
+        String hint = hints[new Random().nextInt(hints.length)];
+        promptEditText.setHint(hint);
 
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
