@@ -8,14 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_constraintBottom_toTopOf="@+id/remainingTokensTextView"
+        app:layout_constraintBottom_toTopOf="@+id/remainingTokensBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -101,8 +99,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Generate NPC" />
-
+                android:text="Generate NPC"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,16 +130,35 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/remainingTokensTextView"
+    <RelativeLayout
+        android:id="@+id/remainingTokensBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_secondary"
-        android:padding="16dp"
-        android:textAlignment="center"
-        android:text="Remaining Tokens: 0"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/remainingTokensTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/design_default_color_secondary"
+            android:padding="16dp"
+            android:textAlignment="center"
+            android:text="Remaining Tokens: 0" />
+
+        <ImageButton
+            android:id="@+id/aiTokenInfoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="24px"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="AIToken Info"
+            android:src="@drawable/baseline_help_outline_24" />
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -89,15 +89,21 @@ public class ChatGPT
         appendCharacterPrompts(tempNPCs, promptSb, "The NPCs are: \n");
     }
 
-    private JSONObject writeGPTPrompt1msg(HttpURLConnection connection, String msg) throws JSONException, IOException {
+    private JSONObject writeGPTPrompt1msg(HttpURLConnection connection, String msg, String userMsg) throws JSONException, IOException {
         OutputStream outputStream = connection.getOutputStream();
         JSONObject root = new JSONObject();
         JSONArray messages = new JSONArray();
         JSONObject prompt = new JSONObject();
-        prompt.put("role", "user");
-
+        prompt.put("role", "system");
         prompt.put("content", msg);
         messages.put(prompt);
+        if (userMsg != null && userMsg.trim().length() > 0)
+        {
+            JSONObject userPrompt = new JSONObject();
+            userPrompt.put("role", "user");
+            userPrompt.put("content", userMsg.trim());
+            messages.put(userPrompt);
+        }
 
         root.put("model", "gpt-3.5-turbo");
         root.put("messages", messages);
@@ -197,7 +203,7 @@ public class ChatGPT
         return new String[]{name, desc};
     }
 
-    public WorldCharacter generateNPC(Campaign c) throws IOException, JSONException, ExecutionException, InterruptedException {
+    public WorldCharacter generateNPC(Campaign c, String npcPrompt) throws IOException, JSONException, ExecutionException, InterruptedException {
         System.out.println("Generating NPC...");
         HttpURLConnection connection = setupConnection();
 
@@ -212,7 +218,7 @@ public class ChatGPT
 
         String completePrompt = sb.toString();
 
-        JSONObject root = writeGPTPrompt1msg(connection, completePrompt);
+        JSONObject root = writeGPTPrompt1msg(connection, completePrompt, npcPrompt);
         System.out.println(root.toString(4));
 
         String content = parseResponse(connection);
@@ -236,7 +242,7 @@ public class ChatGPT
 
         String completePrompt = sb.toString();
 
-        JSONObject root = writeGPTPrompt1msg(connection, completePrompt);
+        JSONObject root = writeGPTPrompt1msg(connection, completePrompt, null);
         System.out.println(root.toString(4));
 
         String content = parseResponse(connection);

@@ -11,6 +11,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import android.content.Intent;
@@ -62,6 +63,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private Button generateNPCButton;
     private Button generateOneShotButton;
     private Button chatWithDMButton;
+    private ImageButton aiTokenInfoButton;
 
     private TextView dmStyleDescriptionTextView;
     private TextView remainingTokensTextView;
@@ -83,7 +85,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
     private static final int REQUEST_NEW_PC = 1;
     private static final int REQUEST_EDIT_PC = 2;
 
-    private static final int REQUEST_NEW_NPC = 3;
+    static final int REQUEST_NEW_NPC = 3;
 
     private static final int REQUEST_EDIT_NPC = 4;
 
@@ -106,6 +108,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
         campaignNameEditText = findViewById(R.id.campaignNameEditText);
         settingEditText = findViewById(R.id.settingEditText);
         remainingTokensTextView = findViewById(R.id.remainingTokensTextView);
+        aiTokenInfoButton = findViewById(R.id.aiTokenInfoButton);
 
         Campaign c = getIntent().getParcelableExtra("campaign");
 
@@ -140,7 +143,10 @@ public class CreateCampaignActivity extends AppCompatActivity {
         generateNPCButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                generateNPC();
+                updateCampaign();
+                Intent intent = new Intent(CreateCampaignActivity.this, CharacterPromptActivity.class);
+                intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
+                startActivityForResult(intent, REQUEST_NEW_NPC);
             }
         });
 
@@ -208,11 +214,22 @@ public class CreateCampaignActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        aiTokenInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(CreateCampaignActivity.this)
+                        .setTitle("AI Tokens")
+                        .setMessage(DM.AI_TOKENS_INFO)
+                        .show();
+            }
+        });
+
     }
 
     private void updateTokens(long tokens){
         if (tokens < 0) {
-            remainingTokensTextView.setText("AI Tokens: " + tokens + " (Ads Enabled)");
+            remainingTokensTextView.setText("AI Tokens: " + 0 + " (Ads Enabled)");
             remainingTokensTextView.setTextColor(0xFFFF0000);
         }
         else {
@@ -348,7 +365,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        System.out.println("On Activity Result");
         if (requestCode == REQUEST_NEW_PC && resultCode == RESULT_OK && data != null) {
             WorldCharacter newChar = data.getParcelableExtra("character");
             this.campaign.pcs.add(newChar);
@@ -402,25 +418,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
         saveCampaign(false);
     }
 
-    private void generateNPC() {
-        NetworkRequestTracker.startRequest();
-        startActivity(new Intent(CreateCampaignActivity.this, LoadingActivity.class));
-        AsyncHook<WorldCharacter> hook = new AsyncHook<WorldCharacter>() {
-            @Override
-            public void onPostExecute(WorldCharacter npcDescription) {
-                updateCampaign();
-                if (npcDescription != null) {
-                    Intent intent = new Intent(CreateCampaignActivity.this, AddPlayerCharacterActivity.class);
-                    intent.putExtra("campaign", CreateCampaignActivity.this.campaign);
-                    intent.putExtra("character", npcDescription);
-                    startActivityForResult(intent, REQUEST_NEW_NPC);
-                }
-                NetworkRequestTracker.endRequest();
-            }
-        };
-        this.updateCampaign();
-        new GenerateNPCTask(this.getApplicationContext(), this.campaign, hook).execute();
-    }
 
     private void generateOneShot() {
         NetworkRequestTracker.startRequest();
