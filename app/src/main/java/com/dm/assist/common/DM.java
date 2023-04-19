@@ -1,8 +1,6 @@
 package com.dm.assist.common;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
 
 public class DM {
     public static final String INTRODUCTION =
@@ -18,6 +16,19 @@ public class DM {
         "To get started, simply tap on the \"New Campaign\" button within the app and begin crafting your epic adventure. As you utilize the various features, your AI tokens will be spent to bring your ideas to life. Keep track of your token balance and spend wisely to make the most of your experience.<br><br>" +
         "Now, it's time for you to take the first step on this incredible journey. Create your first in-app campaign, and let the magic of DungeonMind guide you through a world of endless wonder and excitement. Together, we'll create unforgettable stories that will captivate and inspire you and your players.<br><br>" +
         "Welcome to DungeonMind!";
+
+    public static final String AI_TOKENS_INFO =
+            "AI Tokens are used manage story generation.\n" +
+            "\n" +
+            "The complexity of your setting, your player character's backstories, and the length of conversations you have with DungeonMind, all impact the number of AI Tokens used. \n" +
+            "\n" +
+            "To get the most out of your AI Tokens: \n" +
+            "\n" +
+            "   Prioritize story elements: Always focus on the essential aspects of your setting and characters. \n" +
+            "\n" +
+            "   Limit chat length: Create separate chats for separate questions \n" +
+            "\n" +
+            "Running out of AITokens is not the end.  Your access to DungeonMind will never be disabled. Ads will support our services until more AI Tokens are purchased. ";
 
     public ArrayList<String> pleas;
     public DM()
