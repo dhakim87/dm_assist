@@ -46,6 +46,12 @@ async function addTokens(uid, toAdd) {
         // If the user has no token data yet, set their initial allotment to 10000
         return 10000 + toAdd;
       }
+      if (currentTokens < 0) {
+        // If user is ad supported, set their allotment to the purchased amount.
+        // Theoretically this could screw me, but I think users who go negative
+        // then purchase will be mad if they are still ad supported after purchasing.
+        currentTokens = 0;
+      }
       // Add toAdd tokens
       return currentTokens + toAdd;
     });
