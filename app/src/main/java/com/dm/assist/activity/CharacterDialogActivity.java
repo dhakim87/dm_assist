@@ -62,6 +62,10 @@ public class CharacterDialogActivity extends AppCompatActivity {
         AsyncHook<CharacterDialog> hook = new AsyncHook<CharacterDialog>() {
             @Override
             public void onPostExecute(CharacterDialog d) {
+                if (d == null) {
+                    // Ugh, this needs better handling.  ChatGPT timed out or something but we will lose track of who is speaking.
+                    return;
+                }
                 String lastMessage = d.conversation.get(d.conversation.size()-1);
                 System.out.println("Received: " + lastMessage);
                 messageAdapter.notifyItemInserted(activeDialog.conversation.size() - 1);
