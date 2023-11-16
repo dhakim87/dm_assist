@@ -67,7 +67,7 @@ async function chatWithGPT(postData) {
     const response = await axios.post(targetUrl, postData, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
       },
     });
     return response;
@@ -82,7 +82,7 @@ async function checkOpenAIModeration(inputText) {
     const response = await axios.post(moderationUrl, {input: inputText}, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
       },
     });
     return response;
